@@ -1,0 +1,26 @@
+# Node.js related
+node_modules/
+package.json
+package-lock.json
+rollup.config.js
+
+# Build outputs
+*.esm.js
+*.esm.js.map
+
+# Editor directories and files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+*.bk
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db

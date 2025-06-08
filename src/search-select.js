@@ -367,11 +367,13 @@ export class SearchSelect {
         this.searchSelectContainer.addEventListener('keydown', this.handleKeyboard.bind(this));
 
         const observer = new MutationObserver(mutations => {
-            let optionsChanged = mutations.some(mutation => mutation.type === 'childList');
-            let selectedAttributeChanged = mutations.some(mutation =>
-                mutation.type === 'attributes' && mutation.attributeName === 'selected' && mutation.target.tagName === 'OPTION'
+            const optionsChanged = mutations.some(mutation => mutation.type === 'childList');
+            const attributeChanged = mutations.some(mutation =>
+                mutation.type === 'attributes' &&
+                mutation.target.tagName === 'OPTION' &&
+                ['selected', 'disabled', 'value', 'label'].includes(mutation.attributeName)
             );
-            if (optionsChanged || selectedAttributeChanged) {
+            if (optionsChanged || attributeChanged) {
                 this.options = this.getOptionsItems();
                 this.selectedOption = this.options.find(option => option.selected);
                 this.buildOptions();

@@ -332,12 +332,12 @@ export class SearchSelect {
     }
 
     addEventListeners() {
-        this.displayElement.addEventListener('click', (event) => {
+        this.onDisplayClick = (event) => {
             event.stopPropagation();
             this.toggleDropdown();
-        });
+        };
 
-        this.displayElement.addEventListener('keydown', (event) => {
+        this.onDisplayKeydown = (event) => {
             if (event.key === 'Enter' || event.key === ' ' || event.key === 'ArrowDown' || event.key === 'ArrowUp') {
                 event.preventDefault();
                 this.openDropdown();
@@ -348,23 +348,30 @@ export class SearchSelect {
                     this.highlightOption(this.options.indexOf(visible[visible.length - 1]));
                 }
             }
-        });
+        };
 
-        document.addEventListener('click', (event) => {
+        this.onDocumentClick = (event) => {
             if (!this.searchSelectContainer.contains(event.target) && this.dropdownElement.classList.contains('show')) {
                 this.closeDropdown();
             }
-        });
+        };
 
-        this.searchInput.addEventListener('input', () => {
+        this.onSearchInput = () => {
             this.filterOptions(this.searchInput.value);
-        });
+        };
 
-        this.dropdownElement.addEventListener('click', (event) => {
+        this.onDropdownClick = (event) => {
             event.stopPropagation();
-        });
+        };
 
-        this.searchSelectContainer.addEventListener('keydown', this.handleKeyboard.bind(this));
+        this.onContainerKeydown = this.handleKeyboard.bind(this);
+
+        this.displayElement.addEventListener('click', this.onDisplayClick);
+        this.displayElement.addEventListener('keydown', this.onDisplayKeydown);
+        document.addEventListener('click', this.onDocumentClick);
+        this.searchInput.addEventListener('input', this.onSearchInput);
+        this.dropdownElement.addEventListener('click', this.onDropdownClick);
+        this.searchSelectContainer.addEventListener('keydown', this.onContainerKeydown);
 
         const observer = new MutationObserver(mutations => {
             const optionsChanged = mutations.some(mutation => mutation.type === 'childList');
@@ -396,6 +403,13 @@ export class SearchSelect {
     }
 
     remove() {
+        this.displayElement.removeEventListener('click', this.onDisplayClick);
+        this.displayElement.removeEventListener('keydown', this.onDisplayKeydown);
+        document.removeEventListener('click', this.onDocumentClick);
+        this.searchInput.removeEventListener('input', this.onSearchInput);
+        this.dropdownElement.removeEventListener('click', this.onDropdownClick);
+        this.searchSelectContainer.removeEventListener('keydown', this.onContainerKeydown);
+
         if (this.mutationObserver) {
             this.mutationObserver.disconnect();
         }
